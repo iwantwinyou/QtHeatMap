@@ -1,4 +1,4 @@
-#include "GridWidget.h"
+Ôªø#include "GridWidget.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QPainter>
@@ -10,7 +10,7 @@ GridWidget::GridWidget(int rows, int cols, QWidget *parent /*= nullptr*/)
 	, m_gridWidth(0),m_gridHeight(0)
 	,m_maxPointCount(0),m_minPointCount(0)
 {
-	// ≥ı ºªØ m_pointCounts
+	// ÂàùÂßãÂåñ m_pointCounts
 	m_pointCounts.resize(rows);
 	for (int i = 0; i < rows; ++i)
 	{
@@ -30,9 +30,9 @@ void GridWidget::setPoints(const QList<QPoint>&points)
 	m_points.clear();
 	for (const auto&point : points)
 	{
-		m_points.append(adjustPointToGrid(point));//¥¶¿Ì“ªœ¬≤ª∫œ∑®µƒµ„±»»Á∏∫ ˝ªÚ≥¨π˝¡À◊Ó¥Û÷µ
+		m_points.append(adjustPointToGrid(point));//Â§ÑÁêÜ‰∏Ä‰∏ã‰∏çÂêàÊ≥ïÁöÑÁÇπÊØîÂ¶ÇË¥üÊï∞ÊàñË∂ÖËøá‰∫ÜÊúÄÂ§ßÂÄº
 	}
-	//Õ≥º∆√ø∏ˆÕ¯∏Ò÷–µ„µƒ ˝¡ø
+	//ÁªüËÆ°ÊØè‰∏™ÁΩëÊ†º‰∏≠ÁÇπÁöÑÊï∞Èáè
 	countPointsInGrid(); 
 }
 
@@ -40,7 +40,7 @@ void GridWidget::clearPoints()
 {
 	m_points.clear();
 	countPointsInGrid();
-	// ÷ÿ–¬ªÊ÷∆±≥æ∞ÕºœÒ
+	// ÈáçÊñ∞ÁªòÂà∂ËÉåÊôØÂõæÂÉè
 	update();
 }
 
@@ -48,44 +48,57 @@ void GridWidget::paintEvent(QPaintEvent *event)
 {
 	QWidget::paintEvent(event);
 	QPainter painter(this);
-	//Ω´QImageªÊ÷∆µΩ¥∞ø⁄…œ
+	//Â∞ÜQImageÁªòÂà∂Âà∞Á™óÂè£‰∏ä
 	painter.drawImage(0, 0, m_image);
-	//ªÊ÷∆∑≈»ÎpainterEventª·±»ΩœøÏ
+	//ÁªòÂà∂ÊîæÂÖ•painterEvent‰ºöÊØîËæÉÂø´
 	drawGrid(painter);
 }
 
 void GridWidget::resizeEvent(QResizeEvent *event)
 {
-	// µ˜’˚ QImage ¥Û–°≤¢÷ÿ–¬ªÊ÷∆
+	QWidget::resizeEvent(event);
+	// Ë∞ÉÊï¥ QImage Â§ßÂ∞èÂπ∂ÈáçÊñ∞ÁªòÂà∂
 	m_image = QImage(size(), QImage::Format_ARGB32);
 	m_image.fill(Qt::transparent);
 	update();
-	QWidget::resizeEvent(event);
 }
 
 void GridWidget::drawGrid(QPainter &painter)
 {
-	int leftMargin = 40;  // ◊Û≤‡±ﬂæ‡
-	int topMargin = 40;   // ∂•≤ø±ﬂæ‡
+	int leftMargin = 50;  // Â∑¶‰æßËæπË∑ù
+	int topMargin = 40;   // È°∂ÈÉ®ËæπË∑ù
 
 	painter.setRenderHint(QPainter::Antialiasing);
 	painter.setPen(Qt::black);
 
-	// …Ë÷√◊÷ÃÂ
+	// ËÆæÁΩÆÂ≠ó‰Ωì
 	QFont font = painter.font();
 	font.setPointSize(16);
 	font.setBold(true);
 	painter.setFont(font);
+	int tmGridWidth, tmGgridHeight;
+	if (m_cols == 0 || m_rows == 0)
+	{
+		//ÂàùÂßãÂåñÊó∂ÔºåÁΩëÊ†ºË°åÂàó‰∏∫0ÔºåÊ≠§Êó∂Â§ÑÁêÜ‰∏Ä‰∏ã
+		drawGridBackground(painter, leftMargin, topMargin, m_gridWidth, m_gridHeight);
+		drawGridLines(painter, leftMargin, topMargin, m_gridWidth, m_gridHeight);
+	}
+	else
+	{
+		//ÂÆûÈôÖÁöÑÈó¥Ë∑ù  Ë¶ÅÈó¥Ë∑ùÂ∑¶Âè≥Èó¥Ë∑ù ‰∏ä‰∏ãÈó¥Ë∑ù
+		tmGridWidth = (size().width() - 100) / m_cols;
+		tmGgridHeight = (size().height() - 100) / m_rows;
+		// ÁªòÂà∂ÁΩëÊ†º
+		drawGridBackground(painter, leftMargin, topMargin, tmGridWidth, tmGgridHeight);
+		drawGridLines(painter, leftMargin, topMargin, tmGridWidth, tmGgridHeight);
+	}
 
-	// ªÊ÷∆Õ¯∏Ò
-	drawGridBackground(painter, leftMargin, topMargin, m_gridWidth, m_gridHeight);
-	drawGridLines(painter, leftMargin, topMargin, m_gridWidth, m_gridHeight);
-	// ª÷∏¥ƒ¨»œ◊÷ÃÂ
+	// ÊÅ¢Â§çÈªòËÆ§Â≠ó‰Ωì
 	QFont defaultFont = painter.font();
 	defaultFont.setPointSize(10);
 	defaultFont.setBold(false);
 	painter.setFont(defaultFont);
-	//ª≠µ•Œª
+	//ÁîªÂçï‰Ωç
 	drawGridLabels(painter, leftMargin, topMargin, m_gridWidth, m_gridHeight);
 }
 
@@ -99,22 +112,22 @@ void GridWidget::drawGridBackground(QPainter &painter, int leftMargin, int topMa
 			QColor color;
 			if (m_maxPointCount == m_minPointCount)
 			{
-				color = QColor::fromRgb(255, 255, 255); // ∞◊…´
+				color = QColor::fromRgb(255, 255, 255); // ÁôΩËâ≤
 			}
 			else
 			{
-				//  π”√œﬂ–‘≤Â÷µº∆À„—’…´
+				// ‰ΩøÁî®Á∫øÊÄßÊèíÂÄºËÆ°ÁÆóÈ¢úËâ≤
 				float ratio = (float)(count - m_minPointCount) / (m_maxPointCount - m_minPointCount);
 				int red = (int)(255 * ratio);
 				int green = 255;
 				int blue = 255;
-				color = QColor::fromRgb(255, green - red, blue - red); // ¥”∞◊…´µΩ∫Ï…´
+				color = QColor::fromRgb(255, green - red, blue - red); // ‰ªéÁôΩËâ≤Âà∞Á∫¢Ëâ≤
 			}
 
-			// ªÊ÷∆Õ¯∏Ò±≥æ∞—’…´
+			// ÁªòÂà∂ÁΩëÊ†ºËÉåÊôØÈ¢úËâ≤
 			painter.fillRect(leftMargin + j * gridWidth, topMargin + i * gridHeight, gridWidth, gridHeight, color);
 
-			// ªÊ÷∆µ„ ˝¡ø
+			// ÁªòÂà∂ÁÇπÊï∞Èáè
 			int x = leftMargin + j * gridWidth + gridWidth / 2;
 			int y = topMargin + i * gridHeight + gridHeight / 2;
 			painter.drawText(x, y, QString::number(count));
@@ -140,16 +153,27 @@ void GridWidget::drawGridLines(QPainter &painter, int leftMargin, int topMargin,
 void GridWidget::drawGridLabels(QPainter &painter, int leftMargin, int topMargin, int gridWidth, int gridHeight)
 {
 	painter.setPen(Qt::white);
+	//ÂÆûÈôÖÁöÑÂ∞∫ÂØ∏
+	int real_width = size().width() - 100;
+	int real_height = size().height() - 100;
 	if (m_rows > 0)
 	{
 		for (int i = 0; i <= m_rows; ++i)
 		{
 			QString label = QString::number(i * gridHeight);
-			if (i == m_rows) // »Áπ˚ «◊Ó∫Û“ª––£¨ÃÌº” " mm"
+			if (i == m_rows) // Â¶ÇÊûúÊòØÊúÄÂêé‰∏ÄË°åÔºåÊ∑ªÂä† " mm"
 			{
 				label += " ( mm )";
+			}//Ë∑üÈöèÂÆûÈôÖÁöÑÈ´òÂ∫¶Áîª ‰º†ÂÖ•Êï∞ÊçÆÁöÑÈó¥ÈöîË∑ùÁ¶ª
+			if (m_cols == 0 || m_rows == 0)
+			{//ÂàùÂßãÂåñ ÁÉ≠ÂäõÂõæÊó∂ ÂÅö‰∏Ä‰∏ãÂ§ÑÁêÜ
+				painter.drawText(10, topMargin + i * gridHeight + 10, label);
 			}
-			painter.drawText(10, topMargin + i * gridHeight + 10, label);
+			else
+			{
+				painter.drawText(10, topMargin + i * real_height / m_rows + 10, label);
+			}
+			
 		}
 	}
 	if (m_cols > 0)
@@ -157,18 +181,26 @@ void GridWidget::drawGridLabels(QPainter &painter, int leftMargin, int topMargin
 		for (int j = 0; j <= m_cols; ++j)
 		{
 			QString label = QString::number(j * gridWidth);
-			if (j == m_cols) // »Áπ˚ «◊Ó∫Û“ª¡–£¨ÃÌº” " mm"
+			if (j == m_cols) // Â¶ÇÊûúÊòØÊúÄÂêé‰∏ÄÂàóÔºåÊ∑ªÂä† " mm"
 			{
 				label += " ( mm )";
+			}//Ë∑üÈöèÂÆûÈôÖÁöÑÂÆΩÂ∫¶Áîª ‰º†ÂÖ•Êï∞ÊçÆÁöÑÈó¥ÈöîË∑ùÁ¶ª
+			if (m_cols == 0 || m_rows == 0)
+			{//ÂàùÂßãÂåñ ÁÉ≠ÂäõÂõæÊó∂ ÂÅö‰∏Ä‰∏ãÂ§ÑÁêÜ
+				painter.drawText(leftMargin + j * gridWidth - 25, 30, label);
 			}
-			painter.drawText(leftMargin + j * gridWidth - 10, 30, label);
+			else
+			{
+				painter.drawText(leftMargin + j * real_width / m_cols - 25, 30, label);
+			}
+			
 		}
 	}
 }
 
 void GridWidget::countPointsInGrid()
 {
-	// «Âø’Õ≥º∆ ˝æ›
+	// Ê∏ÖÁ©∫ÁªüËÆ°Êï∞ÊçÆ
 	for (int i = 0; i < m_rows; ++i)
 	{
 		for (int j = 0; j < m_cols; ++j)
@@ -176,7 +208,7 @@ void GridWidget::countPointsInGrid()
 			m_pointCounts[i][j] = 0;
 		}
 	}
-	// Õ≥º∆√ø∏ˆÕ¯∏Ò÷–µƒµ„ ˝¡ø
+	// ÁªüËÆ°ÊØè‰∏™ÁΩëÊ†º‰∏≠ÁöÑÁÇπÊï∞Èáè
 	for (const QPoint &point : m_points)
 	{
 		int row = point.y() / m_gridHeight; 
@@ -207,7 +239,7 @@ QPoint GridWidget::adjustPointToGrid(const QPoint&point) const
 {
 	int x = point.x();
 	int y = point.y();
-	// œﬁ÷∆ x ◊¯±Íµƒ∑∂Œß
+	// ÈôêÂà∂ x ÂùêÊ†áÁöÑËåÉÂõ¥
 	if (x < 0) 
 	{
 		x = 0;
@@ -216,7 +248,7 @@ QPoint GridWidget::adjustPointToGrid(const QPoint&point) const
 	{
 		x = m_cols * m_gridWidth-1;
 	}
-	// œﬁ÷∆ y ◊¯±Íµƒ∑∂Œß
+	// ÈôêÂà∂ y ÂùêÊ†áÁöÑËåÉÂõ¥
 	if (y < 0) 
 	{
 		y = 0;
@@ -233,13 +265,13 @@ void GridWidget::setGridSize(int rows, int cols)
 {
 	m_rows = rows;
 	m_cols = cols;
-	//µ˜’˚m_pointsCounts¥Û–°
+	//Ë∞ÉÊï¥m_pointsCountsÂ§ßÂ∞è
 	m_pointCounts.resize(rows);
 	for (int i = 0; i < rows; ++i)
 	{
 		m_pointCounts[i].resize(cols);
 	}
-	//÷ÿ–¬Õ≥º∆µ„≤¢∏¸–¬ÕºœÒ
+	//ÈáçÊñ∞ÁªüËÆ°ÁÇπÂπ∂Êõ¥Êñ∞ÂõæÂÉè
 	countPointsInGrid();
 	update();
 }

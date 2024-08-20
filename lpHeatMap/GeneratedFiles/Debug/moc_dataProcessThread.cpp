@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_dataProcessThread_t {
-    QByteArrayData data[10];
-    char stringdata0[118];
+    QByteArrayData data[9];
+    char stringdata0[129];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,19 +36,18 @@ static const qt_meta_stringdata_dataProcessThread_t qt_meta_stringdata_dataProce
 QT_MOC_LITERAL(0, 0, 17), // "dataProcessThread"
 QT_MOC_LITERAL(1, 18, 8), // "sgResult"
 QT_MOC_LITERAL(2, 27, 0), // ""
-QT_MOC_LITERAL(3, 28, 7), // "channel"
-QT_MOC_LITERAL(4, 36, 13), // "QList<QPoint>"
-QT_MOC_LITERAL(5, 50, 6), // "points"
-QT_MOC_LITERAL(6, 57, 10), // "onRecvDoff"
-QT_MOC_LITERAL(7, 68, 27), // "QSharedPointer<QJsonObject>"
-QT_MOC_LITERAL(8, 96, 9), // "json_sptr"
-QT_MOC_LITERAL(9, 106, 11) // "onClearData"
+QT_MOC_LITERAL(3, 28, 24), // "QMap<int,QList<QPoint> >"
+QT_MOC_LITERAL(4, 53, 14), // "channelDataMap"
+QT_MOC_LITERAL(5, 68, 10), // "onRecvDoff"
+QT_MOC_LITERAL(6, 79, 27), // "QSharedPointer<QJsonObject>"
+QT_MOC_LITERAL(7, 107, 9), // "json_sptr"
+QT_MOC_LITERAL(8, 117, 11) // "onClearData"
 
     },
-    "dataProcessThread\0sgResult\0\0channel\0"
-    "QList<QPoint>\0points\0onRecvDoff\0"
-    "QSharedPointer<QJsonObject>\0json_sptr\0"
-    "onClearData"
+    "dataProcessThread\0sgResult\0\0"
+    "QMap<int,QList<QPoint> >\0channelDataMap\0"
+    "onRecvDoff\0QSharedPointer<QJsonObject>\0"
+    "json_sptr\0onClearData"
 };
 #undef QT_MOC_LITERAL
 
@@ -66,17 +65,17 @@ static const uint qt_meta_data_dataProcessThread[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   29,    2, 0x06 /* Public */,
+       1,    1,   29,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       6,    1,   34,    2, 0x0a /* Public */,
-       9,    0,   37,    2, 0x0a /* Public */,
+       5,    1,   32,    2, 0x0a /* Public */,
+       8,    0,   35,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 4,    3,    5,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
  // slots: parameters
-    QMetaType::Void, 0x80000000 | 7,    8,
+    QMetaType::Void, 0x80000000 | 6,    7,
     QMetaType::Void,
 
        0        // eod
@@ -88,26 +87,15 @@ void dataProcessThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         dataProcessThread *_t = static_cast<dataProcessThread *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->sgResult((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QList<QPoint>(*)>(_a[2]))); break;
+        case 0: _t->sgResult((*reinterpret_cast< const QMap<int,QList<QPoint> >(*)>(_a[1]))); break;
         case 1: _t->onRecvDoff((*reinterpret_cast< QSharedPointer<QJsonObject>(*)>(_a[1]))); break;
         case 2: _t->onClearData(); break;
         default: ;
         }
-    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        switch (_id) {
-        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 0:
-            switch (*reinterpret_cast<int*>(_a[1])) {
-            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-            case 1:
-                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<QPoint> >(); break;
-            }
-            break;
-        }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            typedef void (dataProcessThread::*_t)(int , QList<QPoint> );
+            typedef void (dataProcessThread::*_t)(const QMap<int,QList<QPoint>> & );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&dataProcessThread::sgResult)) {
                 *result = 0;
                 return;
@@ -146,16 +134,16 @@ int dataProcessThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         if (_id < 3)
-            qt_static_metacall(this, _c, _id, _a);
+            *reinterpret_cast<int*>(_a[0]) = -1;
         _id -= 3;
     }
     return _id;
 }
 
 // SIGNAL 0
-void dataProcessThread::sgResult(int _t1, QList<QPoint> _t2)
+void dataProcessThread::sgResult(const QMap<int,QList<QPoint>> & _t1)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_WARNING_POP

@@ -1,13 +1,13 @@
-#include "dataProcessThread.h"
+ï»¿#include "dataProcessThread.h"
 #include <QVariantMap>
 #include <QDebug>
 dataProcessThread::dataProcessThread(QObject *parent/*=nullptr*/)
 	:QObject(parent)
 {
+	qRegisterMetaType<QList<QPoint>>("QList<QPoint>");
 	m_this_thread_ptr = new QThread(this);
 	this->moveToThread(m_this_thread_ptr);
 	initThread();
-	qRegisterMetaType<QList<QPoint>>("QList<QPoint>");
 	connect(m_this_thread_ptr, &QThread::finished, this, &dataProcessThread::deleteLater);
 }
 
@@ -34,45 +34,42 @@ void dataProcessThread::closeThread()
 		m_this_thread_ptr->deleteLater();
 		m_this_thread_ptr = nullptr;
 	}
-	// Çå¿ÕÊı¾İ
-	m_points.clear();
+	// æ¸…ç©ºæ•°æ®
+	m_channelPoints.clear();
 }
 
 void dataProcessThread::onRecvDoff(QSharedPointer<QJsonObject>json_sptr)
 {
-	//»ñÈ¡Ò»ÕÅÆ¬×ÓµÄ¼ì²â½á¹û£¬ÄÃµ½ĞèÒªµÄĞÅÏ¢£¨È±ÏİµÄ×ø±ê£©
+	qDebug() << __FUNCTION__;
+	//è·å–ä¸€å¼ ç‰‡å­çš„æ£€æµ‹ç»“æœï¼Œæ‹¿åˆ°éœ€è¦çš„ä¿¡æ¯ï¼ˆç¼ºé™·çš„åæ ‡ï¼‰
 	if (json_sptr.isNull())
 	{
 		qDebug() << "__FUNCTION__" << "json is empty!!!" << json_sptr.isNull();
 		return;
 	}
-	//ÄÃµ½¹¤µ¥Í³¼ÆĞÅÏ¢µÄÁ÷µÀÊı
-	QVariantMap map = json_sptr->toVariantMap();
-	QJsonObject doffStatisObj = json_sptr->value("doff_statis").toObject();
-	int channelNum = doffStatisObj.value("channel_num").toInt();
-	//ÄÃµ½Æ¬¼ì½á¹û
+	//æ‹¿åˆ°ç‰‡æ£€ç»“æœ
 	QJsonObject obj = json_sptr->value("doff").toObject();
 	QVariantList flaws = obj.value("flaws").toVariant().toList();
+	int currentChannel = obj.value("channel").toInt();
 	for (const auto&flaw : flaws)
 	{
 		QVariantMap flawMap = flaw.toMap();
-		//ÄÃµ½È±ÏİµÄ×ø±ê
+		//æ‹¿åˆ°ç¼ºé™·åˆ†ç±» okä¸ç®—ç¼ºé™· æ’é™¤
+		int flaw_type = flawMap.value("flaw_class_type").toInt();
+		if(flaw_type==8100)
+			continue;
+		//æ‹¿åˆ°ç¼ºé™·çš„åæ ‡
 		int dCD = flawMap.value("d_cd").toInt();
 		int dMD = flawMap.value("d_md").toInt();
-		//ÄÃµ½È±ÏİµÄÁ÷µÀºÅ
-		int channel = flawMap.value("channel").toInt();
-		// ´´½¨ QPoint ²¢ÉèÖÃ×ø±ê
+		// åˆ›å»º QPoint å¹¶è®¾ç½®åæ ‡
 		QPoint point(dCD, dMD);
-		if (channel >= 0 && channel < channelNum)
-		{
-			m_points.append(point);
-		}
-	}
 
-	emit sgResult(channelNum, m_points);
+		m_channelPoints[currentChannel].append(point);
+	}
+	emit sgResult(m_channelPoints);
 }
 
 void dataProcessThread::onClearData()
 {
-	m_points.clear();
+	m_channelPoints.clear();
 }

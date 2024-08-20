@@ -1,11 +1,11 @@
 ﻿  Moc'ing dataProcessThread.h...
   Moc'ing lpHeatMap.h...
   Moc'ing lpheatmap_global.h...
-  dataProcessThread.cpp
-  GridWidget.cpp
-  lpHeatMap.cpp
   moc_dataProcessThread.cpp
   moc_lpHeatMap.cpp
   moc_lpheatmap_global.cpp
+  GridWidget.cpp
+  dataProcessThread.cpp
+  lpHeatMap.cpp
     正在创建库 E:\Git_ipu\soft_dev\tpvs17\..\runner17\x64\lpHeatMap.lib 和对象 E:\Git_ipu\soft_dev\tpvs17\..\runner17\x64\lpHeatMap.exp
   lpHeatMap.vcxproj -> E:\Git_ipu\soft_dev\tpvs17\..\runner17\x64\lpHeatMap.dll

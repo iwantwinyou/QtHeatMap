@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_lpHeatMap_t {
-    QByteArrayData data[11];
-    char stringdata0[137];
+    QByteArrayData data[10];
+    char stringdata0[148];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,16 +40,16 @@ QT_MOC_LITERAL(3, 24, 27), // "QSharedPointer<QJsonObject>"
 QT_MOC_LITERAL(4, 52, 9), // "json_sptr"
 QT_MOC_LITERAL(5, 62, 17), // "onRecvDoffHeatMap"
 QT_MOC_LITERAL(6, 80, 19), // "onUpdateHeatMapData"
-QT_MOC_LITERAL(7, 100, 7), // "channel"
-QT_MOC_LITERAL(8, 108, 13), // "QList<QPoint>"
-QT_MOC_LITERAL(9, 122, 6), // "points"
-QT_MOC_LITERAL(10, 129, 7) // "onReset"
+QT_MOC_LITERAL(7, 100, 24), // "QMap<int,QList<QPoint> >"
+QT_MOC_LITERAL(8, 125, 14), // "channelDataMap"
+QT_MOC_LITERAL(9, 140, 7) // "onReset"
 
     },
     "lpHeatMap\0sgThreadData\0\0"
     "QSharedPointer<QJsonObject>\0json_sptr\0"
     "onRecvDoffHeatMap\0onUpdateHeatMapData\0"
-    "channel\0QList<QPoint>\0points\0onReset"
+    "QMap<int,QList<QPoint> >\0channelDataMap\0"
+    "onReset"
 };
 #undef QT_MOC_LITERAL
 
@@ -70,16 +70,16 @@ static const uint qt_meta_data_lpHeatMap[] = {
        1,    1,   34,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    1,   37,    2, 0x08 /* Private */,
-       6,    2,   40,    2, 0x08 /* Private */,
-      10,    0,   45,    2, 0x08 /* Private */,
+       5,    1,   37,    2, 0x0a /* Public */,
+       6,    1,   40,    2, 0x0a /* Public */,
+       9,    0,   43,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
-    QMetaType::Void, QMetaType::Int, 0x80000000 | 8,    7,    9,
+    QMetaType::Void, 0x80000000 | 7,    8,
     QMetaType::Void,
 
        0        // eod
@@ -93,20 +93,9 @@ void lpHeatMap::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         switch (_id) {
         case 0: _t->sgThreadData((*reinterpret_cast< QSharedPointer<QJsonObject>(*)>(_a[1]))); break;
         case 1: _t->onRecvDoffHeatMap((*reinterpret_cast< QSharedPointer<QJsonObject>(*)>(_a[1]))); break;
-        case 2: _t->onUpdateHeatMapData((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QList<QPoint>(*)>(_a[2]))); break;
+        case 2: _t->onUpdateHeatMapData((*reinterpret_cast< const QMap<int,QList<QPoint> >(*)>(_a[1]))); break;
         case 3: _t->onReset(); break;
         default: ;
-        }
-    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        switch (_id) {
-        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 2:
-            switch (*reinterpret_cast<int*>(_a[1])) {
-            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-            case 1:
-                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QList<QPoint> >(); break;
-            }
-            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -150,7 +139,7 @@ int lpHeatMap::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 4;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         if (_id < 4)
-            qt_static_metacall(this, _c, _id, _a);
+            *reinterpret_cast<int*>(_a[0]) = -1;
         _id -= 4;
     }
     return _id;

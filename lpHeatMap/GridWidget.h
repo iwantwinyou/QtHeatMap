@@ -1,9 +1,9 @@
-/*
+ï»¿/*
 file:GridWidget.h
 date:2024/6/25
-brief:Íø¸ñ¿Ø¼ş·â×°  ÓÃÓÚÈÈÁ¦Í¼Õ¹Ê¾È±Ïİ¸öÊı£¬²¢ÇÒ¸ù¾İÈ±Ïİ¸öÊı ÏÔÊ¾²»Í¬ÑÕÉ«(¸ù¾İÈ¨ÖØÉèÖÃ½¥±äÉ«)
+brief:ç½‘æ ¼æ§ä»¶å°è£…  ç”¨äºçƒ­åŠ›å›¾å±•ç¤ºç¼ºé™·ä¸ªæ•°ï¼Œå¹¶ä¸”æ ¹æ®ç¼ºé™·ä¸ªæ•° æ˜¾ç¤ºä¸åŒé¢œè‰²(æ ¹æ®æƒé‡è®¾ç½®æ¸å˜è‰²)
 author:wuchaoxi
-
+copyright:æ­å·åˆ©ç€ç§‘æŠ€æœ‰é™å…¬å¸
 */
 
 #pragma once
@@ -17,30 +17,30 @@ public:
 	GridWidget(int rows,int cols,QWidget *parent = nullptr);
 	virtual ~GridWidget();
 
-	//ÉèÖÃ×ø±êµã
+	//è®¾ç½®åæ ‡ç‚¹
 	void setPoints(const QList<QPoint>&points);
-	//Çå¿Õ
+	//æ¸…ç©º
 	void clearPoints();
-	//ÉèÖÃÍø¸ñĞĞÁĞ
+	//è®¾ç½®ç½‘æ ¼è¡Œåˆ—
 	void setGridSize(int rows, int cols);
-	//ÉèÖÃÍø¸ñĞĞÁĞ¸ñ×Ó¼äµÄ¼ä¾à
+	//è®¾ç½®ç½‘æ ¼è¡Œåˆ—æ ¼å­é—´çš„é—´è·
 	void setGridMargin(int gridWidth, int gridHeight);
-	//¸üĞÂµã×ø±êÍ³¼Æ
+	//æ›´æ–°ç‚¹åæ ‡ç»Ÿè®¡
 	void updatePoints(const QList<QPoint>& points);
 protected:
 	void paintEvent(QPaintEvent *event)override;
 	void resizeEvent(QResizeEvent *event)override;
 private:
 	void drawGrid(QPainter &painter);
-	//»­±³¾°
+	//ç”»èƒŒæ™¯
 	void drawGridBackground(QPainter &painter, int leftMargin, int topMargin, int gridWidth, int gridHeight);
-	//»­ Ïß
+	//ç”» çº¿
 	void drawGridLines(QPainter &painter, int leftMargin, int topMargin, int gridWidth, int gridHeight);
-	//»­µ¥Î»(mm)
+	//ç”»å•ä½(mm)
 	void drawGridLabels(QPainter &painter, int leftMargin, int topMargin, int gridWidth, int gridHeight);
-	//Í³¼Æ×ø±êµã¸öÊı
+	//ç»Ÿè®¡åæ ‡ç‚¹ä¸ªæ•°
 	void countPointsInGrid();
-	//µ÷Õûµã×ø±êµÄº¯Êı£¨ÈçÊÇ¸ºÊıÔòÉèÖÃÎª0£¬³¬¹ı×ø±ê×î´óÖµÔòÉèÖÃÎª×î´óÖµ£©
+	//è°ƒæ•´ç‚¹åæ ‡çš„å‡½æ•°ï¼ˆå¦‚æ˜¯è´Ÿæ•°åˆ™è®¾ç½®ä¸º0ï¼Œè¶…è¿‡åæ ‡æœ€å¤§å€¼åˆ™è®¾ç½®ä¸ºæœ€å¤§å€¼ï¼‰
 	QPoint adjustPointToGrid(const QPoint&point)const;
 private:
 	int			m_rows;
@@ -49,8 +49,8 @@ private:
 	int			m_gridHeight;
 	int			m_maxPointCount;
 	int			m_minPointCount;
-	QList<QPoint>				m_points; // ´æ´¢ËùÓĞµÄ×ø±êµã
-	QVector<QVector<int>>		m_pointCounts; // ´æ´¢Ã¿¸öÍø¸ñÖĞµÄµãÊıÁ¿
+	QList<QPoint>				m_points; // å­˜å‚¨æ‰€æœ‰çš„åæ ‡ç‚¹
+	QVector<QVector<int>>		m_pointCounts; // å­˜å‚¨æ¯ä¸ªç½‘æ ¼ä¸­çš„ç‚¹æ•°é‡
 	QImage						m_image;
 };
 

@@ -1,15 +1,16 @@
-/*
+ï»¿/*
 file:lpHeatMap.h
 date:2024/6/24
-brief:ÈÈÁ¦Í¼Ä£¿é
+brief:çƒ­åŠ›å›¾æ¨¡å—
 author:wuchaoxi
-
+copyright:æ­å·åˆ©ç€ç§‘æŠ€æœ‰é™å…¬å¸
 */
 #pragma once
 
 #include "lpheatmap_global.h"
 #include "GridWidget.h"
 #include <QTabWidget>
+#include <QMap>
 #include "dataProcessThread.h"
 class GriWidget;
 class LPHEATMAP_EXPORT lpHeatMap:public lpHeatMapMgr
@@ -18,38 +19,40 @@ class LPHEATMAP_EXPORT lpHeatMap:public lpHeatMapMgr
 public:
 	lpHeatMap(int rows, int cols, int gridWidth, int gridHeight, QWidget *parent = nullptr);
 	virtual ~lpHeatMap();
-	//ÉèÖÃÖ¸¶¨Ò³×ø±êµãÊı¾İ
+	//è®¾ç½®æŒ‡å®šé¡µåæ ‡ç‚¹æ•°æ®
 	void setPointsForPage(int pageIndex, const QList<QPoint>&points);
-	// ³õÊ¼»¯±êÇ©Ò³£¬¸ù¾İ´«ÈëµÄ²ÎÊıÉèÖÃÍ¨µÀÊıÁ¿ºÍÊı¾İ
+	// åˆå§‹åŒ–æ ‡ç­¾é¡µï¼Œæ ¹æ®ä¼ å…¥çš„å‚æ•°è®¾ç½®é€šé“æ•°é‡å’Œæ•°æ®
 	void initializeTabs(int channelCount, const QVector<QList<QPoint>> &channelData);
-	//³õÊ¼»¯£¬¸ù¾İ´«ÈëµÄ²ÎÊıÉèÖÃÍ¨µÀÊıÁ¿ºÍÊı¾İ£¨Êı¾İµş¼Ó£©
+	//åˆå§‹åŒ–ï¼Œæ ¹æ®ä¼ å…¥çš„å‚æ•°è®¾ç½®é€šé“æ•°é‡å’Œæ•°æ®ï¼ˆæ•°æ®å åŠ ï¼‰
 	void setTabData(int channelCount, const QList<QPoint>&pointData)override;
-	//Çå³ı½çÃæÉÏµÄµãÍ³¼Æ
+	//æ¸…é™¤ç•Œé¢ä¸Šçš„ç‚¹ç»Ÿè®¡
 	void clearDataPoints();
-private slots:
-	//ÊÕµ½Ò»ÕÅÆ¬×ÓµÄĞÅÏ¢
+	//è®¾ç½®è¡Œåˆ—
+	void setGridSize(int rows, int cols)override;
+	//è®¾ç½®ç½‘æ ¼é«˜åº¦ï¼Œå®½åº¦
+	void setGridMargin(int gridWidth, int gridHeight) override;
+	//è®¾ç½®é€šé“æ•°
+	void setChannelTabs(int channelCount)override;
+public slots :
+	//æ”¶åˆ°ä¸€å¼ ç‰‡å­çš„ä¿¡æ¯
 	void onRecvDoffHeatMap(QSharedPointer<QJsonObject>json_sptr)override;
-	//¸ù¾İÊÕµ½Æ¬×ÓµÄ×ø±êĞÅÏ¢¸üĞÂÈÈÁ¦Í¼Êı¾İ
-	void onUpdateHeatMapData(int channel,QList<QPoint> points);
-	//¸´Î»£¬Çå³ıµãÀÛ¼Æ¸öÊı
+	//æ ¹æ®æ”¶åˆ°ç‰‡å­çš„åæ ‡ä¿¡æ¯æ›´æ–°çƒ­åŠ›å›¾æ•°æ®
+	void onUpdateHeatMapData(const QMap<int, QList<QPoint>>& channelDataMap);
+	//å¤ä½ï¼Œæ¸…é™¤ç‚¹ç´¯è®¡ä¸ªæ•°
 	void onReset()override;
 signals:
 	void sgThreadData(QSharedPointer<QJsonObject>json_sptr);
 private:
 	void initUI();
-	//ÉèÖÃĞĞÁĞ
-	void setGridSize(int rows, int cols)override;
-	//ÉèÖÃÍø¸ñ¸ß¶È£¬¿í¶È
-	void setGridMargin(int gridWidth, int gridHeight) override;
-	//´´½¨Íø¸ñ
+	//åˆ›å»ºç½‘æ ¼
 	GridWidget *createDefaultGridWidget(QWidget *parent = nullptr);
-	//³õÊ¼»¯Ä¬ÈÏ±êÇ©Ò³ Ä¬ÈÏÎª1
+	//åˆå§‹åŒ–é»˜è®¤æ ‡ç­¾é¡µ é»˜è®¤ä¸º1
 	void initializeDefaultTabs(int channel);
-	void adjustWidgetSize();
 private:
-	QVector<GridWidget*>			m_gridWidgets; // ´æ´¢ËùÓĞµÄ GridWidget
-	QTabWidget*						m_tabWidget; // ´æ´¢±êÇ©Ò³¿Ø¼ş	
-	QList<QPoint>					m_points;	// ´´½¨Ò»¸öÓÃÓÚ±£´æÈ±Ïİµã×ø±êµÄÁĞ±í	
+	QVector<GridWidget*>			m_gridWidgets; // å­˜å‚¨æ‰€æœ‰çš„ GridWidget
+	QTabWidget*						m_tabWidget; // å­˜å‚¨æ ‡ç­¾é¡µæ§ä»¶	
+	QMap<int, QList<QPoint>> m_channelPoints; // å­˜å‚¨æ¯ä¸ªé€šé“çš„ç´¯è®¡ç¼ºé™·ç‚¹<æµé“å·  ç¼ºé™·åæ ‡ç‚¹>
+
 	int m_rows;
 	int m_cols;
 	int m_gridWidth;

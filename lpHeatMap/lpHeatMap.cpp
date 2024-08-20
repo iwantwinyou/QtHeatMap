@@ -1,4 +1,4 @@
-#include "lpHeatMap.h"
+ï»¿#include "lpHeatMap.h"
 #include <QtWidgets>
 #pragma execution_character_set("utf-8")
 
@@ -17,7 +17,8 @@ lpHeatMap::lpHeatMap(int rows, int cols, int gridWidth, int gridHeight, QWidget 
 {
 	initUI();
 	m_pThread = new dataProcessThread;
-	qRegisterMetaType<QList<QPoint>>("QList<QPoint>");
+	// æ³¨å†Œä¿¡å·å‚æ•°ç±»å‹ï¼Œä»¥ä¾¿Qtçš„å…ƒç³»ç»ŸçŸ¥é“å¦‚ä½•ä¼ é€’å®ƒ
+	qRegisterMetaType<QMap<int, QList<QPoint>>>("QMap<int, QList<QPoint>>");
 	connect(this, &lpHeatMap::sgThreadData, m_pThread, &dataProcessThread::onRecvDoff);
 	connect(m_pThread, &dataProcessThread::sgResult, this, &lpHeatMap::onUpdateHeatMapData);
 }
@@ -45,20 +46,17 @@ void lpHeatMap::initializeTabs(int channelCount, const QVector<QList<QPoint>> &c
 		return;
 	}
 
-	// Çå¿ÕÔ­ÓĞµÄ tabs ºÍ widgets
+	// æ¸…ç©ºåŸæœ‰çš„ tabs å’Œ widgets
 	m_tabWidget->clear();
 	m_gridWidgets.clear();
 
 	for (int i = 0; i < channelCount; ++i)
 	{
-		QScrollArea *scrollArea = new QScrollArea(this);
-		scrollArea->setWidgetResizable(true);
-		//´´½¨Ä¬ÈÏ´óĞ¡µÄÍø¸ñ
+		//åˆ›å»ºé»˜è®¤å¤§å°çš„ç½‘æ ¼
 		GridWidget *page = createDefaultGridWidget(this);
-		m_tabWidget->addTab(scrollArea, "Í¨µÀ" + QString::number(i + 1));
-		scrollArea->setWidget(page);
+		m_tabWidget->addTab(page, "é€šé“" + QString::number(i + 1));
 		m_gridWidgets.append(page);
-		// ÉèÖÃÃ¿¸öÍ¨µÀµÄ×ø±êµã
+		// è®¾ç½®æ¯ä¸ªé€šé“çš„åæ ‡ç‚¹
 		setPointsForPage(i, channelData[i]);
 	}
 }
@@ -73,7 +71,7 @@ void lpHeatMap::setTabData(int channelCount, const QList<QPoint>&pointData)
 
 void lpHeatMap::clearDataPoints()
 {
-	m_points.clear();
+	m_channelPoints.clear();
 	for (const auto&widget : m_gridWidgets)
 	{
 		widget->clearPoints();
@@ -82,12 +80,23 @@ void lpHeatMap::clearDataPoints()
 
 void lpHeatMap::onRecvDoffHeatMap(QSharedPointer<QJsonObject>json_sptr)
 {
-	//·¢ËÍĞÅºÅµÄÊı¾İ´¦ÀíÀà µ½Ïß³ÌÖĞ½øĞĞÊı¾İ´¦Àí
+	//å‘é€ä¿¡å·çš„æ•°æ®å¤„ç†ç±» åˆ°çº¿ç¨‹ä¸­è¿›è¡Œæ•°æ®å¤„ç†
 	emit sgThreadData(json_sptr);
 }
-void lpHeatMap::onUpdateHeatMapData(int channel, QList<QPoint> points)
+
+void lpHeatMap::onUpdateHeatMapData(const QMap<int, QList<QPoint>>& channelDataMap)
 {
-	setTabData(channel, points);
+	// æ ¹æ®ä¼ å…¥çš„ QMap æ›´æ–°æ¯ä¸ªæµé“çš„æ•°æ®
+	for (auto it = channelDataMap.begin(); it != channelDataMap.end(); ++it) 
+	{
+		int channel = it.key();
+		const QList<QPoint>& points = it.value();
+		// ç¡®ä¿æ ‡ç­¾é¡µå­˜åœ¨
+		if (channel-1 < m_gridWidgets.size()) 
+		{
+			m_gridWidgets[channel-1]->updatePoints(points);
+		}
+	}
 }
 
 void lpHeatMap::onReset()
@@ -99,7 +108,7 @@ void lpHeatMap::onReset()
 
 void lpHeatMap::initUI()
 {
-	this->setWindowTitle("ÈÈÁ¦Í¼");
+	this->setWindowTitle("çƒ­åŠ›å›¾");
 	QVBoxLayout *mainLayout = new QVBoxLayout(this);
 	this->setLayout(mainLayout);
 	mainLayout->setMargin(0);
@@ -107,22 +116,19 @@ void lpHeatMap::initUI()
 
 	m_tabWidget = new QTabWidget(this);
 	mainLayout->addWidget(m_tabWidget);
-	//Ä¬ÈÏÍ¨µÀÊı
-	initializeDefaultTabs(1);
-	// ÏÂ²¿Çå³ı°´Å¥
+	// ä¸‹éƒ¨æ¸…é™¤æŒ‰é’®
 	QHBoxLayout *bottomHLayout = new QHBoxLayout();
 	bottomHLayout->setMargin(4);
 	bottomHLayout->setSpacing(0);
 	mainLayout->addLayout(bottomHLayout);
 
-	QPushButton *clearBtn = new QPushButton("¸´Î»", this);
+	QPushButton *clearBtn = new QPushButton("å¤ä½", this);
 	clearBtn->setStyleSheet("background:red;color:white");
 	clearBtn->setFixedSize(100, 30);
 	bottomHLayout->addStretch();
 	bottomHLayout->addWidget(clearBtn);
 
 	connect(clearBtn, &QPushButton::clicked, this, &lpHeatMap::onReset);
-	adjustWidgetSize();
 }
 
 void lpHeatMap::setGridSize(int rows, int cols)
@@ -145,6 +151,14 @@ void lpHeatMap::setGridMargin(int gridWidth, int gridHeight)
 	}
 }
 
+void lpHeatMap::setChannelTabs(int channelCount)
+{
+	m_tabWidget->clear();
+	m_gridWidgets.clear();
+	//æ ¹æ®å¤–éƒ¨ä¼ å…¥çš„é€šé“æ•°åˆå§‹åŒ– tabé¡µæ˜¾ç¤º
+	initializeDefaultTabs(channelCount);
+}
+
 GridWidget * lpHeatMap::createDefaultGridWidget(QWidget *parent /*= nullptr*/)
 {
 	GridWidget* widget = new GridWidget(m_rows, m_cols, parent);
@@ -156,28 +170,9 @@ void lpHeatMap::initializeDefaultTabs(int channel)
 {
 	for (int i = 0; i < channel; ++i) 
 	{
-		QScrollArea *scrollArea = new QScrollArea(this);
-		scrollArea->setWidgetResizable(true);
 		GridWidget *page = createDefaultGridWidget(this);
-		m_tabWidget->addTab(scrollArea, "Í¨µÀ" + QString::number(i + 1));
-		scrollArea->setWidget(page);
+		page->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		m_tabWidget->addTab(page, "é€šé“" + QString::number(i + 1));
 		m_gridWidgets.append(page);
-	}
-}
-
-void lpHeatMap::adjustWidgetSize()
-{
-	int totalWidth = m_cols * m_gridWidth + 2 * 60; // ¿¼ÂÇ×óÓÒ±ß¾à
-	int totalHeight = m_rows * m_gridHeight + 2 * 65; // ¿¼ÂÇ¶¥²¿ºÍµ×²¿±ß¾à
-
-	if (m_rows == 0 || m_cols == 0 || m_gridHeight == 0 || m_gridWidth == 0)
-	{
-		//Ã»Êı¾İÉèÖÃÒ»¸öÄ¬ÈÏ´óĞ¡µÄ½çÃæ
-		this->resize(830, 830);
-	}
-	else
-	{
-		// µ÷ÕûÖ÷½çÃæµÄ´óĞ¡ÒÔÈİÄÉÕû¸öÍø¸ñ²¼¾Ö
-		this->resize(totalWidth, totalHeight);
 	}
 }

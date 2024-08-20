@@ -1,9 +1,9 @@
-/*
+ï»¿/*
 file:dataProcessThread.h
 date:2024/7/8
-brief:Êı¾İ´¦ÀíÀà  ºÄÊ±²Ù×÷¶ªÈëÏß³Ì
+brief:æ•°æ®å¤„ç†ç±»  è€—æ—¶æ“ä½œä¸¢å…¥çº¿ç¨‹
 author:wuchaoxi
-
+copyright:æ­å·åˆ©ç€ç§‘æŠ€æœ‰é™å…¬å¸
 */
 
 
@@ -13,6 +13,7 @@ author:wuchaoxi
 #include <QSharedPointer>
 #include <QPoint>
 #include <QThread>
+#include <QMap>
 class dataProcessThread :public QObject
 {
 	Q_OBJECT
@@ -24,12 +25,12 @@ public:
 	void closeThread();
 
 signals:
-	void sgResult(int channel,QList<QPoint>points);
+	void sgResult(const QMap<int, QList<QPoint>>&channelDataMap);
 public slots:
 	void onRecvDoff(QSharedPointer<QJsonObject>json_sptr);
 	void onClearData();
 private:
 	QThread* m_this_thread_ptr;
-	QList<QPoint>  m_points;
+	QMap<int, QList<QPoint>> m_channelPoints;
 };
 

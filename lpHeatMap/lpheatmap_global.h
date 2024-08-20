@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <QtCore/qglobal.h>
 #include <qwidget.h>
@@ -20,12 +20,14 @@ public:
 	lpHeatMapMgr(int rows, int cols, int gridWidth, int gridHeight, QWidget *parent = nullptr) :QWidget(parent),m_rows(rows),m_cols(cols),m_gridWidth(gridWidth),m_gridHeight(gridHeight) {}
 	virtual ~lpHeatMapMgr() {}
 
-	//ÉèÖÃÈÈÁ¦Í¼×ø±êÏµĞĞÁĞ
+	//è®¾ç½®çƒ­åŠ›å›¾åæ ‡ç³»è¡Œåˆ—
 	virtual void setGridSize(int rows, int cols) = 0;
-	//ÉèÖÃÍø¸ñ¸ß¶È£¬¿í¶È
-	virtual void setGridMargin(int gridWidth, int gridHeight) = 0;
-	//ÉèÖÃÊı¾İ
+	//è®¾ç½®ç½‘æ ¼é«˜åº¦ï¼Œå®½åº¦
+	virtual void setGridMargin(int gridWidth, int gridHeight) = 0; 
+	//è®¾ç½®æ•°æ®
 	virtual void setTabData(int channelCount, const QList<QPoint>&pointData)=0;
+	//è®¾ç½®é€šé“æ•°
+	virtual void setChannelTabs(int channelCount) = 0;
 public slots:
 	virtual void onReset() = 0;
 	virtual void onRecvDoffHeatMap(QSharedPointer<QJsonObject>json_sptr) = 0;
